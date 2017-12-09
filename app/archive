@@ -1,0 +1,37 @@
+#! /usr/bin/env python3
+
+import sys, json, struct
+import hashlib
+import os
+
+# Hardcode the recoll index path
+archive_path = os.environ["HOME"] + "/.recollweb/ToIndex"
+
+# Read a message from stdin and decode it.
+def getMessage():
+  rawLength = sys.stdin.buffer.read(4)
+  if len(rawLength) == 0:
+      sys.exit(0)
+  messageLength = struct.unpack('@I', rawLength)[0]
+  message = sys.stdin.buffer.read(messageLength).decode('utf-8')
+  return json.loads(message)
+
+sys.stderr = open(os.environ["HOME"] + "/log/archive.errors", "a")
+# Always listen for messages
+while True:
+  receivedMessage = getMessage()
+  path = archive_path
+  if receivedMessage["type"] == "archive":
+    url = receivedMessage["url"]
+    name = "firefox-recoll-web-" + hashlib.md5(url.encode('utf-8')).hexdigest()
+    html = open(os.path.join(path, name), "w")
+    html.write(receivedMessage["page"])
+    html.close()
+    meta = open(os.path.join(path, '.' + name), "w")
+    meta_content = [url,
+                    "WebHistory",
+                    receivedMessage["mime"],
+                    "k:_unindex:encoding=" + receivedMessage["charset"],
+                    ""]
+    meta.write("\n".join(meta_content))
+    meta.close()

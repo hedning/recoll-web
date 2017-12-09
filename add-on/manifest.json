@@ -1,0 +1,42 @@
+{
+    "description": "Save your web history to Recoll",
+    "manifest_version": 2,
+    "name": "Recoll Web",
+    "version": "1.0"
+
+    , "applications": {
+        "gecko": {
+            "id": "archive@example.org",
+            "strict_min_version": "50.0"
+        }
+    }
+
+    , "background": {
+        "scripts": ["background.js"]
+    }
+
+    , "content_scripts": [
+        {
+            "matches": ["http://*/*", "https://*/*", "file://*/*"]
+            , "js": ["content.js"]
+        }
+    ]
+    , "commands": {
+        "_execute_browser_action": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+E",
+                "windows": "Alt+Shift+P",
+                "mac": "Alt+Shift+P",
+                "linux": "Ctrl+Shift+E"
+            }
+        }
+    }
+
+    , "browser_action": {
+          "default_icon": "icons/message.svg"
+        , "default_title": "index"
+        , "default_popup": "popup.html"
+    }
+
+    , "permissions": ["activeTab", "nativeMessaging"]
+}

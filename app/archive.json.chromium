@@ -1,0 +1,7 @@
+{
+  "name": "archive",
+  "description": "log stdio",
+  "path": "/home/hed/bin/archive",
+  "type": "stdio",
+  "allowed_origins": [ "chrome-extension://lfdkdkbbfbmbbfbglcnajafandflfnji/" ]
+}

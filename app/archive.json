@@ -1,0 +1,7 @@
+{
+  "name": "archive",
+  "description": "Example host for native messaging",
+  "path": "/home/hed/src/recoll-web/app/archive",
+  "type": "stdio",
+  "allowed_extensions": [ "archive@example.org" ]
+}
