@@ -33,9 +33,7 @@
     }
 
     , "browser_action": {
-          "default_icon": "icons/message.svg"
-        , "default_title": "index"
-        , "default_popup": "popup.html"
+        "default_title": "Archive"
     }
 
     , "permissions": ["activeTab", "nativeMessaging"]
