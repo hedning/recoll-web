@@ -1,8 +1,4 @@
-#!/usr/bin/env zsh
-
-function realpath {
-    echo $1:A
-}
+#!/usr/bin/env bash
 
 # Native messaging manifest (mozilla)
 mkdir -p ~/.mozilla/native-messaging-hosts/
