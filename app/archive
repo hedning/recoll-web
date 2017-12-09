@@ -27,22 +27,26 @@ def sendMessage(encodedMessage):
   sys.stdout.write(encodedMessage['content'])
   sys.stdout.flush()
 
+def archive(message):
+  path = archive_path
+  url = message["url"]
+  name = "firefox-recoll-web-" + hashlib.md5(url.encode('utf-8')).hexdigest()
+  html = open(os.path.join(path, name), "w")
+  html.write(message["page"])
+  html.close()
+  meta = open(os.path.join(path, '.' + name), "w")
+  meta_content = [url,
+                  "WebHistory",
+                  message["mime"],
+                  "k:_unindex:encoding=" + message["charset"],
+                  ""]
+  meta.write("\n".join(meta_content))
+  meta.close()
+
 # sys.stderr = open(os.environ["HOME"] + "/log/archive.errors", "a")
 # Always listen for messages
 while True:
-  receivedMessage = getMessage()
-  path = archive_path
-  if receivedMessage["type"] == "archive":
-    url = receivedMessage["url"]
-    name = "firefox-recoll-web-" + hashlib.md5(url.encode('utf-8')).hexdigest()
-    html = open(os.path.join(path, name), "w")
-    html.write(receivedMessage["page"])
-    html.close()
-    meta = open(os.path.join(path, '.' + name), "w")
-    meta_content = [url,
-                    "WebHistory",
-                    receivedMessage["mime"],
-                    "k:_unindex:encoding=" + receivedMessage["charset"],
-                    ""]
-    meta.write("\n".join(meta_content))
-    meta.close()
+  message = getMessage()
+  action = message["type"]
+  if action == "archive":
+    archive(message)
