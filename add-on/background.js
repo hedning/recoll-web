@@ -2,6 +2,9 @@
 On startup setup a port to the archive script
 */
 var port = chrome.runtime.connectNative("archive");
+port.onMessage.addListener((message) => {
+    console.log(message);
+})
 console.log("connected to port:");
 console.log(port);
 // Restart if something goes wrong (not sure if this actually works when if the script crashes)
@@ -26,13 +29,7 @@ chrome.runtime.onMessage.addListener(listener);
   On a click on the chrome action, send the app a message.
 */
 chrome.browserAction.onClicked.addListener(function () {
-    console.log("Archive page.");
-    chrome.tabs.query({
-        'active': true,
-        'currentWindow': true
-    }, function (tabs) {
-        var tab = tabs[0];
-        chrome.tabs.sendMessage(tab.id, { type: 'archive' });
-    });
+    console.log("Search");
+    port.postMessage({ type: 'search' })
 });
 console.log("background.js loaded");
