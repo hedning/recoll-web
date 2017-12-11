@@ -7,6 +7,9 @@ chrome.runtime.onMessage.addListener(
 );
 
 function archive() {
+    if (chrome.extension.inIncognitoContext) {
+        return;
+    }
     chrome.runtime.sendMessage({
         type: 'archive',
         time: Date.now(),
