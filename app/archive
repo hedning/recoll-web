@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python2
 
 import sys, json, struct
 import hashlib
@@ -10,11 +10,11 @@ archive_path = os.environ["HOME"] + "/.recollweb/ToIndex"
 
 # Read a message from stdin and decode it.
 def getMessage():
-  rawLength = sys.stdin.buffer.read(4)
+  rawLength = sys.stdin.read(4)
   if len(rawLength) == 0:
       sys.exit(0)
   messageLength = struct.unpack('@I', rawLength)[0]
-  message = sys.stdin.buffer.read(messageLength).decode('utf-8')
+  message = sys.stdin.read(messageLength)
   return json.loads(message)
 
 def encodeMessage(messageContent):
@@ -24,16 +24,16 @@ def encodeMessage(messageContent):
 
 # Send an encoded message to stdout
 def sendMessage(encodedMessage):
-  sys.stdout.buffer.write(encodedMessage['length'])
+  sys.stdout.write(encodedMessage['length'])
   sys.stdout.write(encodedMessage['content'])
   sys.stdout.flush()
 
 def archive(message):
   path = archive_path
-  url = message["url"]
+  url = message[u"url"]
   name = "firefox-recoll-web-" + hashlib.md5(url.encode('utf-8')).hexdigest()
   html = open(os.path.join(path, name), "w")
-  html.write(message["page"])
+  html.write(message[u"page"].encode(encoding='utf-8'))
   html.close()
   meta = open(os.path.join(path, '.' + name), "w")
   meta_content = [url,
@@ -48,7 +48,7 @@ def archive(message):
 # Always listen for messages
 while True:
   message = getMessage()
-  action = message["type"]
+  action = message[u"type"]
   if action == "archive":
     archive(message)
   elif action == "search":
