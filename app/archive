@@ -4,6 +4,9 @@ import sys, json, struct
 import hashlib
 import os
 import subprocess
+import recoll
+
+db = recoll.connect()
 
 # Hardcode the recoll index path
 archive_path = os.environ["HOME"] + "/.recollweb/ToIndex"
@@ -44,6 +47,18 @@ def archive(message):
   meta.write("\n".join(meta_content))
   meta.close()
 
+def search(message):
+  query = db.query()
+  query_string = 'rclbes:BGL ' + message[u'query']
+  size = query.execute(query_string)
+  result = []
+  for doc in query:
+    entry = doc.items()
+    entry[u'snippet'] = query.makedocabstract(doc, query.highlight)
+    result.append(entry)
+  message[u'result'] = result
+  sendMessage(encodeMessage(message))
+
 # sys.stderr = open(os.environ["HOME"] + "/log/archive.errors", "a")
 # Always listen for messages
 while True:
@@ -52,13 +67,4 @@ while True:
   if action == "archive":
     archive(message)
   elif action == "search":
-    # Run recoll -t -A -q
-    # query = message["query"]
-    query = 'bar'
-    cmd = ["recoll", "-t", "-m", "rclbes:BGL", query]
-    process = subprocess.run(cmd, stdout=subprocess.PIPE)
-    stdout = str(process.stdout)
-    # Add the result, and send the message back, so the extension can invalidate
-    # stale query responses
-    message['result'] = stdout
-    sendMessage(encodeMessage(message))
+    search(message)
