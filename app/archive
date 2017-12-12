@@ -33,10 +33,10 @@ def sendMessage(encodedMessage):
 
 def archive(message):
   path = archive_path
-  url = message[u"url"]
+  url = message["url"]
   name = "firefox-recoll-web-" + hashlib.md5(url.encode('utf-8')).hexdigest()
   html = open(os.path.join(path, name), "w")
-  html.write(message[u"page"].encode(encoding='utf-8'))
+  html.write(message["page"].encode(encoding='utf-8'))
   html.close()
   meta = open(os.path.join(path, '.' + name), "w")
   meta_content = [url,
@@ -49,21 +49,21 @@ def archive(message):
 
 def search(message):
   query = db.query()
-  query_string = 'rclbes:BGL ' + message[u'query']
+  query_string = 'rclbes:BGL ' + message['query']
   size = query.execute(query_string)
   result = []
   for doc in query:
     entry = doc.items()
-    entry[u'snippet'] = query.makedocabstract(doc, query.highlight)
+    entry['snippet'] = query.makedocabstract(doc, query.highlight)
     result.append(entry)
-  message[u'result'] = result
+  message['result'] = result
   sendMessage(encodeMessage(message))
 
 # sys.stderr = open(os.environ["HOME"] + "/log/archive.errors", "a")
 # Always listen for messages
 while True:
   message = getMessage()
-  action = message[u"type"]
+  action = message["type"]
   if action == "archive":
     archive(message)
   elif action == "search":
