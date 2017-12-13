@@ -6,8 +6,6 @@ import os
 import subprocess
 import recoll
 
-db = recoll.connect()
-
 # Hardcode the recoll index path
 archive_path = os.environ["HOME"] + "/.recollweb/ToIndex"
 
@@ -48,6 +46,7 @@ def archive(message):
   meta.close()
 
 def search(message):
+  db = recoll.connect()
   query = db.query()
   query_string = message['query']
   query.execute('rclbes:BGL ' + query_string)
@@ -61,6 +60,7 @@ def search(message):
     sendMessage(encodeMessage(entry))
 
 def omnisearch(message):
+  db = recoll.connect()
   query = db.query()
   query_string = message['query']
   query.execute('rclbes:BGL ' + query_string)
