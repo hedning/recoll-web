@@ -1,8 +1,6 @@
 let searchbox = document.getElementById('searchbox');
 let output = document.getElementById('output');
 
-searchbox.focus();
-
 let port = chrome.runtime.connect();
 let disconnected = false;
 port.onDisconnect.addListener(() => {
@@ -29,6 +27,17 @@ function searchHandler(message) {
     output.appendChild(div);
 }
 
+function search() {
+    let query = searchbox.value;
+    output.innerHTML = "";
+    if (query === '')
+        return;
+    port.postMessage(
+        {type: 'search',
+         query: searchbox.value}
+    );
+}
+
 port.onMessage.addListener(searchHandler);
 
 searchbox.addEventListener(
@@ -39,9 +48,9 @@ searchbox.addEventListener(
             port.onMessage.addListener(searchHandler);
             disconnected = false;
         }
-        output.innerHTML = "";
-        port.postMessage(
-            {type: 'search',
-             query: searchbox.value}
-        );
+        search();
 })
+
+searchbox.value = location.search.substring(3);
+search();
+searchbox.focus();
