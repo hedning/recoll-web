@@ -24,6 +24,23 @@ function listener(message) {
         console.log(message);
     }
 }
+
+chrome.runtime.onConnect.addListener(onConnect);
+let contentPort;
+function onConnect(p) {
+    contentPort = p;
+    contentPort.onMessage.addListener(
+        (message) => {
+            port.postMessage(message);
+        }
+    );
+    port.onMessage.addListener(
+        (message) => {
+            contentPort.postMessage(message);
+        }
+    )
+}
+
 chrome.runtime.onMessage.addListener(listener);
 /*
   On a click on the chrome action, send the app a message.
