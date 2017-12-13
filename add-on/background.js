@@ -24,24 +24,28 @@ function listener(message) {
         console.log(message);
     }
 }
+chrome.runtime.onMessage.addListener(listener);
 
-chrome.runtime.onConnect.addListener(onConnect);
 let contentPort;
 function onConnect(p) {
     contentPort = p;
-    contentPort.onMessage.addListener(
-        (message) => {
-            port.postMessage(message);
-        }
-    );
-    port.onMessage.addListener(
-        (message) => {
-            contentPort.postMessage(message);
-        }
-    )
+    // Disconnect any existing proxy handlers
+    contentPort.onMessage.removeListener(proxyToApp);
+    port.onMessage.removeListener(proxyToContent);
+
+    // Proxy messages between the content script and the app
+    contentPort.onMessage.addListener(proxyToApp);
+    port.onMessage.addListener(proxyToContent);
+}
+chrome.runtime.onConnect.addListener(onConnect);
+
+function proxyToApp(message) {
+    port.postMessage(message);
+}
+function proxyToContent(message) {
+    contentPort.postMessage(message);
 }
 
-chrome.runtime.onMessage.addListener(listener);
 /*
   On a click on the chrome action, send the app a message.
 */
