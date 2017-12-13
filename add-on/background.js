@@ -33,3 +33,56 @@ chrome.browserAction.onClicked.addListener(function () {
     port.postMessage({ type: 'search' })
 });
 console.log("background.js loaded");
+
+chrome.omnibox.setDefaultSuggestion({
+    description: 'Search your local history using Recoll'
+})
+
+
+function omniboxListenWrapper(query, addSuggestions) {
+    return function omniboxListen(message) {
+        port.onMessage.removeListener(omniboxListen);
+        console.log(query);
+        console.log(message);
+        if (!message.result || message.query !== query) {
+            return;
+        }
+        let suggestions = [];
+        for (let entry of message.result) {
+            suggestions.push({
+                content: entry.url,
+                description: entry.title
+            });
+            // The omnibar will only show six hits
+            if (suggestions.length > 5) {
+                break;
+            }
+        }
+        addSuggestions(suggestions);
+    }
+}
+
+chrome.omnibox.onInputChanged.addListener(
+    (text, addSuggestions) => {
+        port.postMessage({type: 'omnibox', query: text});
+        let listener = omniboxListenWrapper(text, addSuggestions);
+        port.onMessage.addListener(listener);
+    }
+)
+
+chrome.omnibox.onInputEntered.addListener(
+    (url, disposition) => {
+        switch (disposition) {
+        case "currentTab":
+            browser.tabs.update({url});
+            break;
+        case "newForegroundTab":
+            browser.tabs.create({url});
+            break;
+        case "newBackgroundTab":
+            browser.tabs.create({url, active: false});
+            break;
+        }
+        // port.onMessage.removeListener(omniboxListen);
+    }
+)

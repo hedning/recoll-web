@@ -36,5 +36,7 @@
         "default_title": "Archive"
     }
 
+    , "omnibox": { "keyword": "r" }
+
     , "permissions": ["activeTab", "nativeMessaging"]
 }

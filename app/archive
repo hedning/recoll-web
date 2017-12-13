@@ -49,12 +49,27 @@ def archive(message):
 
 def search(message):
   query = db.query()
-  query_string = 'rclbes:BGL ' + message['query']
-  size = query.execute(query_string)
+  query_string = message['query']
+  query.execute('rclbes:BGL ' + query_string)
+  if query.rowcount == 0:
+    return
   result = []
   for doc in query:
     entry = doc.items()
-    entry['snippet'] = query.makedocabstract(doc, query.highlight)
+    entry['snippet'] = query.highlight(query.makedocabstract(doc))
+    entry['query'] = query_string
+    sendMessage(encodeMessage(entry))
+
+def omnisearch(message):
+  query = db.query()
+  query_string = message['query']
+  query.execute('rclbes:BGL ' + query_string)
+  if query.rowcount == 0:
+    sendMessage(encodeMessage(message))
+    return
+  result = []
+  for doc in query:
+    entry = doc.items()
     result.append(entry)
   message['result'] = result
   sendMessage(encodeMessage(message))
@@ -68,3 +83,5 @@ while True:
     archive(message)
   elif action == "search":
     search(message)
+  elif action == "omnibox":
+    omnisearch(message)
