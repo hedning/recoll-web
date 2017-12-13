@@ -28,7 +28,8 @@ chrome.runtime.onMessage.addListener(listener);
 
 let contentPort;
 function onConnect(p) {
-    contentPort.disconnect();
+    if (contentPort)
+        contentPort.disconnect();
     contentPort = p;
     // Disconnect any existing proxy handlers
     contentPort.onMessage.removeListener(proxyToApp);
