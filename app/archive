@@ -3,7 +3,6 @@
 import sys, json, struct
 import hashlib
 import os
-import subprocess
 import recoll
 
 # Hardcode the recoll index path
