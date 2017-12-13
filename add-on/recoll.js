@@ -51,6 +51,6 @@ searchbox.addEventListener(
         search();
 })
 
-searchbox.value = location.search.substring(3);
+searchbox.value = decodeURI(location.search.substring(3));
 search();
 searchbox.focus();
