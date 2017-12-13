@@ -58,6 +58,18 @@ searchbox.addEventListener(
         search();
 })
 
+searchbox.addEventListener(
+    'change',
+    (e) => {
+        if (disconnected) {
+            port = chrome.runtime.connect();
+            port.onMessage.addListener(searchHandler);
+            disconnected = false;
+        }
+        postSearch();
+    }
+)
+
 searchbox.value = decodeURI(location.search.substring(3));
 search();
 searchbox.focus();
