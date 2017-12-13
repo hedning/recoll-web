@@ -30,7 +30,7 @@ function searchHandler(message) {
 let timer;
 function search() {
     let query = searchbox.value;
-    if (query.length > 2) {
+    if (query.length < 3) {
         return;
     }
     output.innerHTML = "";
