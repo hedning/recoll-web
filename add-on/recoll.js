@@ -71,5 +71,5 @@ searchbox.addEventListener(
 )
 
 searchbox.value = decodeURI(location.search.substring(3));
-search();
+postSearch();
 searchbox.focus();
