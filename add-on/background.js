@@ -71,7 +71,12 @@ chrome.omnibox.onInputChanged.addListener(
 )
 
 chrome.omnibox.onInputEntered.addListener(
-    (url, disposition) => {
+    (text, disposition) => {
+        let url = text;
+        console.log(text);
+        if (!text.startsWith('http')) {
+            url = chrome.extension.getURL(`recoll.html?q=${text}`);
+        }
         switch (disposition) {
         case "currentTab":
             browser.tabs.update({url});
@@ -83,6 +88,5 @@ chrome.omnibox.onInputEntered.addListener(
             browser.tabs.create({url, active: false});
             break;
         }
-        // port.onMessage.removeListener(omniboxListen);
     }
 )
