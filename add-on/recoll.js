@@ -27,11 +27,18 @@ function searchHandler(message) {
     output.appendChild(div);
 }
 
+let timer;
 function search() {
     let query = searchbox.value;
-    output.innerHTML = "";
-    if (query === '')
+    if (query.length > 2) {
         return;
+    }
+    output.innerHTML = "";
+    window.clearTimeout(timer);
+    timer = window.setTimeout(postSearch, 250);
+}
+
+function postSearch() {
     port.postMessage(
         {type: 'search',
          query: searchbox.value}
