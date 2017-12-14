@@ -30,18 +30,18 @@ function searchHandler(message) {
 let timer;
 function search() {
     output.innerHTML = "";
-    let query = searchbox.value;
-    if (query.length < 3) {
-        return;
-    }
     window.clearTimeout(timer);
-    timer = window.setTimeout(postSearch, 250);
+    timer = window.setTimeout(postSearch, 200);
 }
 
-function postSearch() {
+function postSearch(force) {
+    let query = searchbox.value;
+    if (query.length < 3 && !force) {
+        return;
+    }
     port.postMessage(
         {type: 'search',
-         query: searchbox.value}
+         query: query}
     );
 }
 
