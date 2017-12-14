@@ -87,6 +87,8 @@ function omniboxListenWrapper(query, addSuggestions) {
 
 chrome.omnibox.onInputChanged.addListener(
     (text, addSuggestions) => {
+        if (text.length < 3)
+            return;
         port.postMessage({type: 'omnibox', query: text});
         let listener = omniboxListenWrapper(text, addSuggestions);
         port.onMessage.addListener(listener);
