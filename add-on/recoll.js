@@ -8,7 +8,8 @@ port.onDisconnect.addListener(() => {
 })
 
 function searchHandler(message) {
-    if (message.query !== searchbox.value) {
+    if (message.query !== searchbox.value ||
+        message.snippet === undefined) {
         return;
     }
     let div = document.createElement('div');
