@@ -15,12 +15,12 @@ function searchHandler(message) {
     let div = document.createElement('div');
 
     let title = document.createElement('h5');
-    title.innerHTML = message.title;
+    title.innerText = message.title;
     let snippet = document.createElement('p');
     snippet.innerHTML = message.snippet;
     let url = document.createElement('a');
     url.setAttribute('href', message.url);
-    url.innerHTML = message.url;
+    url.innerText = message.url;
 
     div.appendChild(title);
     div.appendChild(snippet);
