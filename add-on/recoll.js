@@ -29,11 +29,11 @@ function searchHandler(message) {
 
 let timer;
 function search() {
+    output.innerHTML = "";
     let query = searchbox.value;
     if (query.length < 3) {
         return;
     }
-    output.innerHTML = "";
     window.clearTimeout(timer);
     timer = window.setTimeout(postSearch, 250);
 }
