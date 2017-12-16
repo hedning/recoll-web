@@ -82,7 +82,6 @@ def omnisearch(message):
   message['result'] = result
   sendMessage(encodeMessage(message))
 
-# sys.stderr = open(os.environ["HOME"] + "/log/archive.errors", "a")
 # Always listen for messages
 while True:
   message = getMessage()
