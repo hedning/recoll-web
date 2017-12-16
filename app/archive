@@ -6,8 +6,16 @@ import os
 import recoll
 import traceback
 
-# Hardcode the recoll index path
-webqueuedir = os.environ["HOME"] + "/.recollweb/ToIndex"
+try:
+  from recoll import rclconfig
+except:
+  import rclconfig
+
+config = rclconfig.RclConfig()
+webqueuedir = config.getConfParam("webqueuedir")
+if not webqueuedir:
+    webqueuedir = "~/.recollweb/ToIndex"
+webqueuedir = os.path.expanduser(webqueuedir)
 
 # Read a message from stdin and decode it.
 def getMessage():
