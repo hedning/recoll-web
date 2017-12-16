@@ -4,6 +4,7 @@ import sys, json, struct
 import hashlib
 import os
 import recoll
+import traceback
 
 # Hardcode the recoll index path
 archive_path = os.environ["HOME"] + "/.recollweb/ToIndex"
@@ -78,9 +79,14 @@ def omnisearch(message):
 while True:
   message = getMessage()
   action = message["type"]
-  if action == "archive":
-    archive(message)
-  elif action == "search":
-    search(message)
-  elif action == "omnibox":
-    omnisearch(message)
+  try:
+    if action == "archive":
+      archive(message)
+    elif action == "search":
+      search(message)
+    elif action == "omnibox":
+      omnisearch(message)
+  except:
+    error = traceback.format_exc()
+    sys.stderr.write(error)
+    sys.stderr.flush()
