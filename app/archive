@@ -7,7 +7,7 @@ import recoll
 import traceback
 
 # Hardcode the recoll index path
-archive_path = os.environ["HOME"] + "/.recollweb/ToIndex"
+webqueuedir = os.environ["HOME"] + "/.recollweb/ToIndex"
 
 # Read a message from stdin and decode it.
 def getMessage():
@@ -30,7 +30,7 @@ def sendMessage(encodedMessage):
   sys.stdout.flush()
 
 def archive(message):
-  path = archive_path
+  path = webqueuedir
   url = message["url"]
   name = "firefox-recoll-web-" + hashlib.md5(url.encode('utf-8')).hexdigest()
   html = open(os.path.join(path, name), "w")
