@@ -52,8 +52,6 @@ function proxyToContent(message) {
   On a click on the chrome action, send the app a message.
 */
 chrome.browserAction.onClicked.addListener(function () {
-    console.log("Search");
-    port.postMessage({ type: 'search' })
 });
 console.log("background.js loaded");
 
