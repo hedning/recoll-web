@@ -5,6 +5,8 @@ import hashlib
 import os
 import recoll
 import traceback
+from Queue import Queue, Empty
+from threading import Thread
 
 try:
   from recoll import rclconfig
@@ -18,13 +20,14 @@ if not webqueuedir:
 webqueuedir = os.path.expanduser(webqueuedir)
 
 # Read a message from stdin and decode it.
-def getMessage():
-  rawLength = sys.stdin.read(4)
-  if len(rawLength) == 0:
-      sys.exit(0)
-  messageLength = struct.unpack('@I', rawLength)[0]
-  message = sys.stdin.read(messageLength)
-  return json.loads(message)
+def queue_messages(queue):
+  while True:
+    rawLength = sys.stdin.read(4)
+    if len(rawLength) == 0:
+        sys.exit(0)
+    messageLength = struct.unpack('@I', rawLength)[0]
+    message = sys.stdin.read(messageLength)
+    queue.put(json.loads(message));
 
 def encodeMessage(messageContent):
   encodedContent = json.dumps(messageContent)
@@ -82,9 +85,14 @@ def omnisearch(message):
   message['result'] = result
   sendMessage(encodeMessage(message))
 
+queue = Queue()
+thread = Thread(target=queue_messages, args=(queue,))
+thread.daemon = True
+thread.start()
+
 # Always listen for messages
 while True:
-  message = getMessage()
+  message = queue.get(block=True)
   action = message["type"]
   try:
     if action == "archive":
